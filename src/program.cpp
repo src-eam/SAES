@@ -38,7 +38,6 @@ int main(int argc, char *argv[]) {
 	kf >> hex >> tmp;
 	key[1] = (tmp & 0xff);
 	kf.close();
-	cout << hex << (int)key[0] << " " << (int)key[1] << endl;
 
 	string inFile = string(argv[3]);
 	ifstream input(inFile);
