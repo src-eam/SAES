@@ -1,22 +1,73 @@
+// usage: ./s_aes <mode> <key_file> <input_file> <outpu_file>
+
 #include <iostream>
-#include <assert.h>
+#include <fstream>
+#include <iterator>
 #include "EncryptSAES.h"
 #include "DecryptSAES.h"
+
 using namespace std;
 
-int main() {
-	string testStr = "ababq";
-	int key = 100;
-	EncryptSAES enS(testStr);
-	DecryptSAES deS(enS.encrypt(key));
-	assert(deS.decrypt(key) == testStr + " ");
+int main(int argc, char *argv[]) {
+	if (argc != 5) {
+		cerr
+				<< "Error. Usage: ./s_aes <mode> <key_file> <input_file> <outpu_file>.\n";
+		exit(EXIT_FAILURE);
+	}
+	bool flagMode;
+	string mode = string(argv[1]);
+	if (mode == "-encrypt")
+		flagMode = true;
+	else if (mode == "-decrypt")
+		flagMode = false;
+	else {
+		cerr << "Error with arguments. Mode not correct.\n";
+		exit(EXIT_FAILURE);
+	}
 
-	string res = "";
-	string encr = enS.encrypt(key + 5);
-	DecryptSAES des_2(encr);
-	des_2.decrypt(res, key + 5);
-	assert(res == testStr + " ");
+	string keyFile = string(argv[2]);
+	ifstream kf(keyFile);
+	if (!kf.is_open()) {
+		cerr << "Error opening the key file: " << keyFile << endl;
+		exit(EXIT_FAILURE);
+	}
+	vector<uint8_t> key(2);
+	unsigned int tmp;
+	kf >> hex >> tmp;
+	key[0] = (tmp & 0xff);
+	kf >> hex >> tmp;
+	key[1] = (tmp & 0xff);
+	kf.close();
+	cout << hex << (int)key[0] << " " << (int)key[1] << endl;
 
-	cout << "OK!" << endl;
+	string inFile = string(argv[3]);
+	ifstream input(inFile);
+	if (!input.is_open()) {
+		cerr << "Error opening the input file: " << inFile << endl;
+		exit(EXIT_FAILURE);
+	}
+	input.unsetf(ios::skipws);
+	std::istream_iterator<char> eos;
+	string data(istream_iterator<char>(input), eos);
+	input.close();
+
+	string outFile = string(argv[4]);
+	ofstream output(outFile);
+	if (!output.is_open()) {
+		cerr << "Error opening the output file: " << outFile << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	if (flagMode) {
+		EncryptSAES encrypt(data);
+		output << encrypt.encrypt(key);
+	}
+	else {
+		DecryptSAES decrypt(data);
+		output << decrypt.decrypt(key);
+	}
+	cout << "Data length: " << data.length() << endl;
+	output.close();
+
 	return 0;
 }

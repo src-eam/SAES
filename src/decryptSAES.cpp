@@ -31,13 +31,13 @@ void DecryptSAES::decryptSAES() {
 	addRoundKey(0);
 }
 
-std::string DecryptSAES::decrypt(const int &key) {
+std::string DecryptSAES::decrypt(const std::vector<uint8_t> &key) {
 	std::string result;
 	decrypt(result,key);
 	return result;
 }
 
-void DecryptSAES::decrypt(std::string &resultDecrypt, const int &key) {
+void DecryptSAES::decrypt(std::string &resultDecrypt, const std::vector<uint8_t> &key) {
 	if (this->text == "")
 		resultDecrypt = "";
 	else {

@@ -12,8 +12,8 @@ protected:
 	void mixColumns();
 	void encryptSAES();
 public:
-	std::string encrypt(const int &key);
-	void encrypt(std::string & resultEncrypt,const int &k);
+	std::string encrypt(const std::vector<uint8_t> &key);
+	void encrypt(std::string & resultEncrypt,const std::vector<uint8_t> &key);
 	EncryptSAES();
 	explicit EncryptSAES(const std::string &txt);
 	~EncryptSAES() { };

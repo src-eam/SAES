@@ -38,13 +38,13 @@ EncryptSAES::EncryptSAES(const std::string &txt) {
 		text += " ";
 }
 
-std::string EncryptSAES::encrypt(const int &k) {
+std::string EncryptSAES::encrypt(const std::vector<uint8_t> &key) {
 	std::string result = "";
-	encrypt(result,k);
+	encrypt(result,key);
 	return result;
 }
 
-void EncryptSAES::encrypt(std::string &resultEncrypt, const int &key) {
+void EncryptSAES::encrypt(std::string &resultEncrypt, const std::vector<uint8_t> &key) {
 	if (this->text == "")
 		resultEncrypt = "";
 	else {
